@@ -1,17 +1,115 @@
 import { AzureFunction, Context, HttpRequest } from "@azure/functions"
+import axios, { AxiosRequestConfig } from 'axios';
+import qs = require('qs');
+
+const APP_ID = process.env["appId"];
+const APP_SECRET = process.env["appSecret"];
+const TENANT_ID = process.env["tenantId"];
+const SITE_ID = process.env["siteId"];
+const LIST_ID = process.env["listId"];
+
+
+const TOKEN_ENDPOINT = 'https://login.microsoftonline.com/' + TENANT_ID + '/oauth2/v2.0/token';
+const MS_GRAPH_SCOPE = 'https://graph.microsoft.com/.default';
+const MS_GRAPH_ENDPOINT_LISTITEM = 'https://graph.microsoft.com/v1.0/sites/' + SITE_ID + '/lists/' + LIST_ID + '/items';
 
 const httpTrigger: AzureFunction = async function (context: Context, req: HttpRequest): Promise<void> {
     context.log('HTTP trigger function processed a request.');
-    const name = (req.query.name || (req.body && req.body.name));
-    const responseMessage = name
-        ? "Hello, " + name + ". This HTTP triggered function executed successfully."
-        : "This HTTP triggered function executed successfully. Pass a name in the query string or in the request body for a personalized response.";
+    
+
+    context.log("Body: ", req.body)
+
+    context.log(APP_ID)
+    context.log(APP_SECRET)
+    context.log(TENANT_ID)
+
+    // Set Default Header for Axios Requests
+    axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';
+    let token = await getToken();
+    let response = await postListItem(token, req.body);
+
+
+    context.log(response)
+
 
     context.res = {
         // status: 200, /* Defaults to 200 */
-        body: responseMessage
+        body: req.body
     };
 
 };
 
 export default httpTrigger;
+
+/**
+ * Get Token for MS Graph
+ */
+ async function getToken(): Promise<string> {
+    const postData = {
+        client_id: APP_ID,
+        scope: MS_GRAPH_SCOPE,
+        client_secret: APP_SECRET,
+        grant_type: 'client_credentials'
+    };
+
+    return await axios
+        .post(TOKEN_ENDPOINT, qs.stringify(postData))
+        .then(response => {
+            // console.log(response.data);
+            return response.data.access_token;
+        })
+        .catch(error => {
+            console.log(error);
+        });
+}
+
+/**
+ * Post Item
+ * @param token Token to authenticate through MS Graph
+ */
+ async function postListItem(token:string, body:any): Promise<any> {
+    let is18: boolean = body.age == "yes" ? true : false;
+    let datesAufbau: string[] = body['aufbau-dates'] ? body['aufbau-dates'].split(";"): [];
+    let datesKulti: string[] = body['kulti-dates'] ? body['kulti-dates'].split(";"): [];
+    let datesAbbau: string[] = body['abbau-dates'] ? body['abbau-dates'].split(";"): [];
+    let jobs: string[] = body['can-do'] ?  body['can-do'].split(";"): [];
+
+
+    let config: AxiosRequestConfig = {
+        method: 'post',
+        url: MS_GRAPH_ENDPOINT_LISTITEM,
+        headers: {
+          'Authorization': 'Bearer ' + token //the token is a variable which holds the token
+        },
+        data: {
+            "fields": {
+                "Title": body.vorname + ' ' + body.nachname,
+                "Email": body.email,
+                "Handynummer": body.phone,
+                "_x0031_8_x002b_": is18,
+                "T_x002d_Shirt": body["shirt-size"],
+                "Zusammenmit": body.friend,
+                "Beruf": body.job,
+                "Fuehrerschein": body['driver-license'],
+                "DatenAufbau@odata.type": "Collection(Edm.String)",
+                "DatenAufbau": datesAufbau,
+                "DatenKulti@odata.type": "Collection(Edm.String)",
+                "DatenKulti": datesKulti,
+                "DatenAbbau@odata.type": "Collection(Edm.String)",
+                "DatenAbbau": datesAbbau,
+                "Jobs@odata.type": "Collection(Edm.String)",
+                "Jobs": jobs,
+                "Nachricht": body.message
+            }
+        }
+    }
+    
+    return await axios(config)
+        .then(response => {
+            console.log(response.data);
+            return response.data.value;
+        })
+        .catch(error => {
+            console.log(error);
+        });
+}
