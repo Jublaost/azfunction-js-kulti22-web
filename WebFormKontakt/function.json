@@ -16,5 +16,5 @@
       "name": "res"
     }
   ],
-  "scriptFile": "../dist/SendMailToInfo/index.js"
+  "scriptFile": "../dist/WebFormKontakt/index.js"
 }

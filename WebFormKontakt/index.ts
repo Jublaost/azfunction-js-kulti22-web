@@ -18,7 +18,7 @@ const httpTrigger: AzureFunction = async function (context: Context, req: HttpRe
     // Set Default Header for Axios Requests
     axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';
     let token = await getToken();
-    let response = await sendMail(token);
+    let response = await sendMail(token, req.body);
     
     await sendToTeams(req.body);
 
@@ -94,7 +94,7 @@ async function sendToTeams(body:any) {
   await axios(config);
 }
 
-async function sendMail(token:string) {
+async function sendMail(token:string, body:any) {
   let config: AxiosRequestConfig = {
       method: 'post',
       url: MS_GRAPH_ENDPOINT_SENDMAIL,
@@ -103,15 +103,15 @@ async function sendMail(token:string) {
       },
       data: {
           "message": {
-            "subject": "Some Subject",
+            "subject": "Kontaktaufnahme",
             "body": {
               "contentType": "Text",
-              "content": "Blabla"
+              "content": "Hallo " + body.name + "\n\nVielen Dank für deine Kontaktaufnahme! Wir werden uns so schnell wie möglich wieder bei dir melden.\n\nFeurige Grüsse\nDas Kulti22 Team"
             },
             "toRecipients": [
               {
                 "emailAddress": {
-                  "address": "thvome@gmail.com"
+                  "address": body.email
                 }
               }
             ]

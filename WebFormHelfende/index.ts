@@ -12,6 +12,7 @@ const LIST_ID = process.env["listId"];
 const TOKEN_ENDPOINT = 'https://login.microsoftonline.com/' + TENANT_ID + '/oauth2/v2.0/token';
 const MS_GRAPH_SCOPE = 'https://graph.microsoft.com/.default';
 const MS_GRAPH_ENDPOINT_LISTITEM = 'https://graph.microsoft.com/v1.0/sites/' + SITE_ID + '/lists/' + LIST_ID + '/items';
+const MS_GRAPH_ENDPOINT_SENDMAIL = 'https://graph.microsoft.com/v1.0/users/info@kulti22.ch/sendMail';
 
 const httpTrigger: AzureFunction = async function (context: Context, req: HttpRequest): Promise<void> {
     context.log('HTTP trigger function processed a request.');
@@ -22,8 +23,9 @@ const httpTrigger: AzureFunction = async function (context: Context, req: HttpRe
     axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';
     let token = await getToken();
     let response = await postListItem(token, req.body);
+    let mail = await sendMail(token, req.body);
 
-    context.log(response);
+    context.log(response, mail);
 
 
     context.res = {
@@ -56,6 +58,44 @@ export default httpTrigger;
             console.log(error);
         });
 }
+
+
+async function sendMail(token:string, body:any) {
+    let config: AxiosRequestConfig = {
+        method: 'post',
+        url: MS_GRAPH_ENDPOINT_SENDMAIL,
+        headers: {
+          'Authorization': 'Bearer ' + token //the token is a variable which holds the token
+        },
+        data: {
+            "message": {
+              "subject": "DANKE fürs Helfen",
+              "body": {
+                "contentType": "Text",
+                "content": "Hallo " + body.vorname + "\n\nVielen Dank für deine Teilnehme am Kulti22! Wir werden dir neue Informationen schicken, sobald es soweit ist.\n\nFeurige Grüsse\nDas Kulti22 Team"
+              },
+              "toRecipients": [
+                {
+                  "emailAddress": {
+                    "address": body.email
+                  }
+                }
+              ]
+            },
+            "saveToSentItems": "true"
+          }
+    }
+    
+    return await axios(config)
+        .then(response => {
+            console.log(response.data);
+            return response.data.value;
+        })
+        .catch(error => {
+            console.log(error);
+        });
+  }
+  
 
 /**
  * Post Item
