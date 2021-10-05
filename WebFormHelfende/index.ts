@@ -15,21 +15,15 @@ const MS_GRAPH_ENDPOINT_LISTITEM = 'https://graph.microsoft.com/v1.0/sites/' + S
 
 const httpTrigger: AzureFunction = async function (context: Context, req: HttpRequest): Promise<void> {
     context.log('HTTP trigger function processed a request.');
-    
 
     context.log("Body: ", req.body)
-
-    context.log(APP_ID)
-    context.log(APP_SECRET)
-    context.log(TENANT_ID)
 
     // Set Default Header for Axios Requests
     axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';
     let token = await getToken();
     let response = await postListItem(token, req.body);
 
-
-    context.log(response)
+    context.log(response);
 
 
     context.res = {
