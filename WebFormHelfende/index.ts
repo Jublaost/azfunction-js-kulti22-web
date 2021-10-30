@@ -15,23 +15,23 @@ const MS_GRAPH_ENDPOINT_LISTITEM = 'https://graph.microsoft.com/v1.0/sites/' + S
 const MS_GRAPH_ENDPOINT_SENDMAIL = 'https://graph.microsoft.com/v1.0/users/info@kulti22.ch/sendMail';
 
 const httpTrigger: AzureFunction = async function (context: Context, req: HttpRequest): Promise<void> {
-    context.log('HTTP trigger function processed a request.');
+  context.log('HTTP trigger function processed a request.');
 
-    context.log("Body: ", req.body)
+  context.log("Body: ", req.body)
 
-    // Set Default Header for Axios Requests
-    axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';
-    let token = await getToken();
-    let response = await postListItem(token, req.body);
-    let mail = await sendMail(token, req.body);
+  // Set Default Header for Axios Requests
+  axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';
+  let token = await getToken();
+  let response = await postListItem(token, req.body);
+  let mail = await sendMail(token, req.body);
 
-    context.log(response, mail);
+  context.log(response, mail);
 
 
-    context.res = {
-        // status: 200, /* Defaults to 200 */
-        body: req.body
-    };
+  context.res = {
+    // status: 200, /* Defaults to 200 */
+    body: req.body
+  };
 
 };
 
@@ -40,110 +40,111 @@ export default httpTrigger;
 /**
  * Get Token for MS Graph
  */
- async function getToken(): Promise<string> {
-    const postData = {
-        client_id: APP_ID,
-        scope: MS_GRAPH_SCOPE,
-        client_secret: APP_SECRET,
-        grant_type: 'client_credentials'
-    };
+async function getToken(): Promise<string> {
+  const postData = {
+    client_id: APP_ID,
+    scope: MS_GRAPH_SCOPE,
+    client_secret: APP_SECRET,
+    grant_type: 'client_credentials'
+  };
 
-    return await axios
-        .post(TOKEN_ENDPOINT, qs.stringify(postData))
-        .then(response => {
-            // console.log(response.data);
-            return response.data.access_token;
-        })
-        .catch(error => {
-            console.log(error);
-        });
+  return await axios
+    .post(TOKEN_ENDPOINT, qs.stringify(postData))
+    .then(response => {
+      // console.log(response.data);
+      return response.data.access_token;
+    })
+    .catch(error => {
+      console.log(error);
+    });
 }
 
 
-async function sendMail(token:string, body:any) {
-    let config: AxiosRequestConfig = {
-        method: 'post',
-        url: MS_GRAPH_ENDPOINT_SENDMAIL,
-        headers: {
-          'Authorization': 'Bearer ' + token //the token is a variable which holds the token
+async function sendMail(token: string, body: any) {
+  let config: AxiosRequestConfig = {
+    method: 'post',
+    url: MS_GRAPH_ENDPOINT_SENDMAIL,
+    headers: {
+      'Authorization': 'Bearer ' + token //the token is a variable which holds the token
+    },
+    data: {
+      "message": {
+        "subject": "DANKE fürs Helfen",
+        "body": {
+          "contentType": "Text",
+          "content": "Hallo " + body.vorname + "\n\nVielen Dank für deine Teilnehme am Kulti22! Wir werden dir neue Informationen schicken, sobald es soweit ist.\n\nFeurige Grüsse\nDas Kulti22 Team"
         },
-        data: {
-            "message": {
-              "subject": "DANKE fürs Helfen",
-              "body": {
-                "contentType": "Text",
-                "content": "Hallo " + body.vorname + "\n\nVielen Dank für deine Teilnehme am Kulti22! Wir werden dir neue Informationen schicken, sobald es soweit ist.\n\nFeurige Grüsse\nDas Kulti22 Team"
-              },
-              "toRecipients": [
-                {
-                  "emailAddress": {
-                    "address": body.email
-                  }
-                }
-              ]
-            },
-            "saveToSentItems": "true"
+        "toRecipients": [
+          {
+            "emailAddress": {
+              "address": body.email
+            }
           }
+        ]
+      },
+      "saveToSentItems": "true"
     }
-    
-    return await axios(config)
-        .then(response => {
-            console.log(response.data);
-            return response.data.value;
-        })
-        .catch(error => {
-            console.log(error);
-        });
   }
-  
+
+  return await axios(config)
+    .then(response => {
+      console.log(response.data);
+      return response.data.value;
+    })
+    .catch(error => {
+      console.log(error);
+    });
+}
+
 
 /**
  * Post Item
  * @param token Token to authenticate through MS Graph
  */
- async function postListItem(token:string, body:any): Promise<any> {
-    let is18: boolean = body.age == "yes" ? true : false;
-    let datesAufbau: string[] = body['aufbau-dates'] ? body['aufbau-dates'].split(";"): [];
-    let datesKulti: string[] = body['kulti-dates'] ? body['kulti-dates'].split(";"): [];
-    let datesAbbau: string[] = body['abbau-dates'] ? body['abbau-dates'].split(";"): [];
-    let jobs: string[] = body['can-do'] ?  body['can-do'].split(";"): [];
+async function postListItem(token: string, body: any): Promise<any> {
+  let is18: boolean = body.age == "yes" ? true : false;
+  let datesAufbau: string[] = body['aufbau-dates'] ? body['aufbau-dates'].split(";") : [];
+  let datesKulti: string[] = body['kulti-dates'] ? body['kulti-dates'].split(";") : [];
+  let datesAbbau: string[] = body['abbau-dates'] ? body['abbau-dates'].split(";") : [];
+  let jobs: string[] = body['can-do'] ? body['can-do'].split(";") : [];
 
 
-    let config: AxiosRequestConfig = {
-        method: 'post',
-        url: MS_GRAPH_ENDPOINT_LISTITEM,
-        headers: {
-          'Authorization': 'Bearer ' + token //the token is a variable which holds the token
-        },
-        data: {
-            "fields": {
-                "Title": body.vorname + ' ' + body.nachname,
-                "Email": body.email,
-                "Handynummer": body.phone,
-                "_x0031_8_x002b_": is18,
-                "T_x002d_Shirt": body["shirt-size"],
-                "Zusammenmit": body.friend,
-                "Beruf": body.job,
-                "Fuehrerschein": body['driver-license'],
-                "DatenAufbau@odata.type": "Collection(Edm.String)",
-                "DatenAufbau": datesAufbau,
-                "DatenKulti@odata.type": "Collection(Edm.String)",
-                "DatenKulti": datesKulti,
-                "DatenAbbau@odata.type": "Collection(Edm.String)",
-                "DatenAbbau": datesAbbau,
-                "Jobs@odata.type": "Collection(Edm.String)",
-                "Jobs": jobs,
-                "Nachricht": body.message
-            }
-        }
+  let config: AxiosRequestConfig = {
+    method: 'post',
+    url: MS_GRAPH_ENDPOINT_LISTITEM,
+    headers: {
+      'Authorization': 'Bearer ' + token //the token is a variable which holds the token
+    },
+    data: {
+      "fields": {
+        "Title": body.vorname + ' ' + body.nachname,
+        "Email": body.email,
+        "Handynummer": body.phone,
+        "IBAN": body.iban,
+        "_x0031_8_x002b_": is18,
+        "T_x002d_Shirt": body["shirt-size"],
+        "Zusammenmit": body.friend,
+        "Beruf": body.job,
+        "Fuehrerschein": body['driver-license'],
+        "DatenAufbau@odata.type": "Collection(Edm.String)",
+        "DatenAufbau": datesAufbau,
+        "DatenKulti@odata.type": "Collection(Edm.String)",
+        "DatenKulti": datesKulti,
+        "DatenAbbau@odata.type": "Collection(Edm.String)",
+        "DatenAbbau": datesAbbau,
+        "Jobs@odata.type": "Collection(Edm.String)",
+        "Jobs": jobs,
+        "Nachricht": body.message
+      }
     }
-    
-    return await axios(config)
-        .then(response => {
-            console.log(response.data);
-            return response.data.value;
-        })
-        .catch(error => {
-            console.log(error);
-        });
+  }
+
+  return await axios(config)
+    .then(response => {
+      console.log(response.data);
+      return response.data.value;
+    })
+    .catch(error => {
+      console.log(error);
+    });
 }
