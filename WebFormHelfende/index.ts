@@ -72,7 +72,7 @@ async function sendMail(token: string, body: any) {
         "subject": "Bestätigung Helfende Kulti22",
         "body": {
           "contentType": "html",
-          "content": "Hallo " + body.vorname + "\n\n<b>Wir freuen uns sehr, dass du uns dabei unterstützt, das Kulti 22 unvergesslich zu machen. Schon jetzt ganz herzlichen Dank dafür!</b>\nDie detaillierten Informationen zu deinem Helfendeneinsatz wirst du im Sommer 2022 erhalten.\nBei allfälligen Fragen wende dich bitte an: simona@kulti22.ch\n\nFeurige Grüsse\nDas Kulti22 Team"
+          "content": "Hallo " + body.vorname + "<br /><br /><strong>Wir freuen uns sehr, dass du uns dabei unterstützt, das Kulti 22 unvergesslich zu machen. Schon jetzt ganz herzlichen Dank dafür!</strong><br />Die detaillierten Informationen zu deinem Helfendeneinsatz wirst du im Sommer 2022 erhalten.<br />Bei allfälligen Fragen wende dich bitte an: simona@kulti22.ch<br /><br />Feurige Grüsse<br />Das Kulti22 Team"
         },
         "toRecipients": [
           {
