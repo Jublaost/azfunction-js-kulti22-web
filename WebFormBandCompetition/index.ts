@@ -99,7 +99,7 @@ async function sendMail(token: string, body: any) {
                 "subject": "Bestätigung Teilnahme Band Competition Kulti22",
                 "body": {
                     "contentType": "html",
-                    "content": "Hallo " + body.Title + "<br /><br /><strong>Toll bist/seid du/ihr dabei</strong><br /><br />Feurige Grüsse<br />Das Kulti22 Team"
+                    "content": "Hallo " + body.bandname + "<br /><br /><strong>Toll bist/seid du/ihr dabei</strong><br /><br />Feurige Grüsse<br />Das Kulti22 Team"
                 },
                 "toRecipients": [
                     {
