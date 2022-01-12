@@ -141,7 +141,8 @@ async function postListItem(token: string, body: any): Promise<any> {
                 "Title": body.bandname,
                 "Kontaktemail": body.email,
                 "Homepage": body.homepage,
-                "Beschreibung": body.description
+                "Beschreibung": body.motivationsbeschrieb,
+                "Links": body.links
             }
         }
     }
