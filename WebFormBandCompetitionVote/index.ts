@@ -26,8 +26,8 @@ const httpTrigger: AzureFunction = async function (context: Context, req: HttpRe
         context.bindings.tableBinding = [];
         context.bindings.tableBinding.push({
             PartitionKey: "VOTING",
-            RowKey: req.body.act,
-            Email: req.body.email
+            RowKey: req.body.email,
+            Act: req.body.act
         });
 
         let token = await getToken();
