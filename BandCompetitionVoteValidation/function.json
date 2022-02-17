@@ -37,7 +37,7 @@
     {
       "type": "http",
       "direction": "out",
-      "name": "res"
+      "name": "$return"
     }
   ],
   "scriptFile": "../dist/BandCompetitionVoteValidation/index.js"

@@ -6,7 +6,7 @@ const httpTrigger: AzureFunction = async function (context: Context, req: HttpRe
     let successForward = "https://link.kulti22.ch/votingSuccess";
     let errorForward = "https://link.kulti22.ch/votingError";
 
-    if (context.bindings.voteEntity) {
+    if (context.bindings.votingEntity) {
         var res = { status: 302, headers: { "location": successForward }, body: null };
         context.done(null, res);
     } else {
