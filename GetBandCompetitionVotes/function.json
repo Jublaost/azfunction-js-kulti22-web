@@ -1,0 +1,27 @@
+{
+  "bindings": [
+    {
+      "authLevel": "function",
+      "type": "httpTrigger",
+      "direction": "in",
+      "name": "req",
+      "methods": [
+        "get"
+      ]
+    },
+    {
+      "name": "votingEntities",
+      "type": "table",
+      "tableName": "voting",
+      "partitionKey": "VOTE",
+      "connection": "StorageConnectionAppSetting",
+      "direction": "in"
+    },
+    {
+      "type": "http",
+      "direction": "out",
+      "name": "res"
+    }
+  ],
+  "scriptFile": "../dist/GetBandCompetitionVotes/index.js"
+}
