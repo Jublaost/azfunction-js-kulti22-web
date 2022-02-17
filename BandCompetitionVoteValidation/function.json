@@ -6,9 +6,33 @@
       "direction": "in",
       "name": "req",
       "methods": [
-        "get",
-        "post"
+        "get"
       ]
+    },
+    {
+      "name": "validationEntity",
+      "type": "table",
+      "tableName": "voting",
+      "partitionKey": "VALIDATE",
+      "rowKey": "{email}",
+      "connection": "StorageConnectionAppSetting",
+      "direction": "in"
+    },
+    {
+      "name": "votingEntity",
+      "type": "table",
+      "tableName": "voting",
+      "partitionKey": "VOTE",
+      "rowKey": "{email}",
+      "connection": "StorageConnectionAppSetting",
+      "direction": "in"
+    },
+    {
+      "tableName": "voting",
+      "connection": "StorageConnectionAppSetting",
+      "name": "tableBinding",
+      "type": "table",
+      "direction": "out"
     },
     {
       "type": "http",

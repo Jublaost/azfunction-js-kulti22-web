@@ -6,6 +6,8 @@ const APP_ID = process.env["appId"];
 const APP_SECRET = process.env["appSecret"];
 const TENANT_ID = process.env["tenantId"];
 const TEAMS_WEBHOOK = process.env["teamsWebhook"]
+const RECAPTCHA = process.env["recaptchaCode"]
+
 
 const TOKEN_ENDPOINT = 'https://login.microsoftonline.com/' + TENANT_ID + '/oauth2/v2.0/token';
 const MS_GRAPH_SCOPE = 'https://graph.microsoft.com/.default';
@@ -46,7 +48,7 @@ async function validateRECAP(token: string) {
     method: 'post',
     url: "https://www.google.com/recaptcha/api/siteverify",
     params: {
-      secret: "6Le6UXYdAAAAAMugTHAfZoozHLgn7AV5XnIa_7Gc",
+      secret: RECAPTCHA,
       response: token
     }
   }

@@ -8,6 +8,8 @@ const { v4: uuidv4 } = require('uuid')
 const APP_ID = process.env["appId"];
 const APP_SECRET = process.env["appSecret"];
 const TENANT_ID = process.env["tenantId"];
+const RECAPTCHA = process.env["recaptchaCode"]
+
 
 const TOKEN_ENDPOINT = 'https://login.microsoftonline.com/' + TENANT_ID + '/oauth2/v2.0/token';
 const MS_GRAPH_SCOPE = 'https://graph.microsoft.com/.default';
@@ -16,33 +18,45 @@ const MS_GRAPH_ENDPOINT_SENDMAIL = 'https://graph.microsoft.com/v1.0/users/info@
 
 const httpTrigger: AzureFunction = async function (context: Context, req: HttpRequest): Promise<void> {
     context.log('HTTP trigger function processed a request.');
-    context.log('Email entity name: ' + context.bindings.votingEntity.RowKey);
     context.log("Body: ", req.body)
 
     let validation = await validateRECAP(req.body["g-recaptcha-response"]);
     context.log(validation);
 
     if (validation) {
+        if (context.bindings.validationEntity) {
+            context.log('Email entity name: ' + context.bindings.validationEntity.RowKey);
+            context.res = {
+                // status: 200, /* Defaults to 200 */
+                body: {
+                    message: "alreadyvoted"
+                }
+            };
+        } else {
 
-        // Set Default Header for Axios Requests
-        axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';
+            let uuid = uuidv4();
 
-        context.bindings.tableBinding = [];
-        context.bindings.tableBinding.push({
-            PartitionKey: "VOTING",
-            RowKey: req.body.email,
-            Act: req.body.act,
-            Uuid: uuidv4(),
-            Verified: false
-        });
+            // Set Default Header for Axios Requests
+            axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';
 
-        let token = await getToken();
-        let mail = await sendMail(token, req.body);
+            context.bindings.tableBinding = [];
+            context.bindings.tableBinding.push({
+                PartitionKey: "VALIDATE",
+                RowKey: req.body.email,
+                Act: req.body.act,
+                Code: uuid
+            });
 
-        context.res = {
-            // status: 200, /* Defaults to 200 */
-            body: req.body
-        };
+            let token = await getToken();
+            let mail = await sendMail(token, req.body, uuid);
+
+            context.res = {
+                // status: 200, /* Defaults to 200 */
+                body: {
+                    message: "successful"
+                }
+            };
+        }
     } else {
         context.log("validation failed");
         context.res = {
@@ -60,7 +74,7 @@ async function validateRECAP(token: string) {
         method: 'post',
         url: "https://www.google.com/recaptcha/api/siteverify",
         params: {
-            secret: "6Le6UXYdAAAAAMugTHAfZoozHLgn7AV5XnIa_7Gc",
+            secret: RECAPTCHA,
             response: token
         }
     }
@@ -98,7 +112,7 @@ async function getToken(): Promise<string> {
 }
 
 
-async function sendMail(token: string, body: any) {
+async function sendMail(token: string, body: any, code: string) {
     let config: AxiosRequestConfig = {
         method: 'post',
         url: MS_GRAPH_ENDPOINT_SENDMAIL,
@@ -110,7 +124,7 @@ async function sendMail(token: string, body: any) {
                 "subject": "Verifizierung und Abschluss des Votings!",
                 "body": {
                     "contentType": "html",
-                    "content": "Du hast dene Stimme " + body.act + " gegeben. Besten Dank!<br /><br />Feurige Grüsse<br />Das Kulti22 Team"
+                    "content": "Vielen Dank! " + body.act + " wird sich garantiert freuen.<br />Bitte bestätige nur noch deine Stimme mit folgendem Link: <a href='https://kulti22.azurewebsites.net/api/BandCompetitionVoteValidation?email=" + body.email + "&code=" + code + "'>Bestätigen</a><br /><br />Feurige Grüsse<br />Das Kulti22 Team"
                 },
                 "toRecipients": [
                     {

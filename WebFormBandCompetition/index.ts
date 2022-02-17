@@ -7,6 +7,7 @@ const APP_SECRET = process.env["appSecret"];
 const TENANT_ID = process.env["tenantId"];
 const SITE_ID = process.env["siteId"];
 const COMPETITION_LIST_ID = process.env["competitionListId"];
+const RECAPTCHA = process.env["recaptchaCode"]
 
 
 const TOKEN_ENDPOINT = 'https://login.microsoftonline.com/' + TENANT_ID + '/oauth2/v2.0/token';
@@ -50,7 +51,7 @@ async function validateRECAP(token: string) {
         method: 'post',
         url: "https://www.google.com/recaptcha/api/siteverify",
         params: {
-            secret: "6Le6UXYdAAAAAMugTHAfZoozHLgn7AV5XnIa_7Gc",
+            secret: RECAPTCHA,
             response: token
         }
     }

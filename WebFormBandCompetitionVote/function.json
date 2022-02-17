@@ -6,15 +6,14 @@
       "direction": "in",
       "name": "req",
       "methods": [
-        "get",
         "post"
       ]
     },
     {
-      "name": "votingEntity",
+      "name": "validationEntity",
       "type": "table",
       "tableName": "voting",
-      "partitionKey": "VOTING",
+      "partitionKey": "VALIDATE",
       "rowKey": "{email}",
       "connection": "StorageConnectionAppSetting",
       "direction": "in"
