@@ -11,6 +11,15 @@
       ]
     },
     {
+      "name": "votingEntity",
+      "type": "table",
+      "tableName": "voting",
+      "partitionKey": "VOTING",
+      "rowKey": "{req.body.email}",
+      "connection": "StorageConnectionAppSetting",
+      "direction": "in"
+    },
+    {
       "tableName": "voting",
       "connection": "StorageConnectionAppSetting",
       "name": "tableBinding",
