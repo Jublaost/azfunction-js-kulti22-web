@@ -1,7 +1,9 @@
 import { AzureFunction, Context, HttpRequest } from "@azure/functions"
 import axios, { AxiosRequestConfig } from 'axios';
-import Uuid from 'uuid'
 import qs = require('qs');
+
+const { v4: uuidv4 } = require('uuid')
+
 
 const APP_ID = process.env["appId"];
 const APP_SECRET = process.env["appSecret"];
@@ -14,7 +16,7 @@ const MS_GRAPH_ENDPOINT_SENDMAIL = 'https://graph.microsoft.com/v1.0/users/info@
 
 const httpTrigger: AzureFunction = async function (context: Context, req: HttpRequest): Promise<void> {
     context.log('HTTP trigger function processed a request.');
-    context.log('Person entity name: ' + context.bindings.votingEntity);
+    context.log('Email entity name: ' + context.bindings.votingEntity.RowKey);
     context.log("Body: ", req.body)
 
     let validation = await validateRECAP(req.body["g-recaptcha-response"]);
@@ -30,7 +32,7 @@ const httpTrigger: AzureFunction = async function (context: Context, req: HttpRe
             PartitionKey: "VOTING",
             RowKey: req.body.email,
             Act: req.body.act,
-            GUID: Uuid.v4(),
+            Uuid: uuidv4(),
             Verified: false
         });
 
