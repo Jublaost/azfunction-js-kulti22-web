@@ -15,7 +15,7 @@
       "type": "table",
       "tableName": "voting",
       "partitionKey": "VOTING",
-      "rowKey": "{httpTrigger.body.email}",
+      "rowKey": "{email}",
       "connection": "StorageConnectionAppSetting",
       "direction": "in"
     },
