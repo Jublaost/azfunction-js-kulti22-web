@@ -7,7 +7,8 @@ const httpTrigger: AzureFunction = async function (context: Context, req: HttpRe
     let errorForward = "https://link.kulti22.ch/votingError";
 
     if (context.bindings.voteEntity) {
-        context.res.redirect(successForward)
+        var res = { status: 302, headers: { "location": successForward }, body: null };
+        context.done(null, res);
     } else {
 
         let email = context.bindings.validationEntity.RowKey;
@@ -26,9 +27,11 @@ const httpTrigger: AzureFunction = async function (context: Context, req: HttpRe
                 Act: act,
             });
 
-            context.res.redirect(successForward)
+            var res = { status: 302, headers: { "location": successForward }, body: null };
+            context.done(null, res);
         } else {
-            context.res.redirect(errorForward)
+            var res = { status: 302, headers: { "location": errorForward }, body: null };
+            context.done(null, res);
         }
     }
 
