@@ -5,13 +5,19 @@ const httpTrigger: AzureFunction = async function (context: Context, req: HttpRe
 
     let votes: Vote[] = context.bindings.votingEntities;
 
-    const result = votes.reduce((counter, vote) => (counter[vote.Act] = (counter[vote.Act] || 0) + 1, counter), {});
+    const results = votes.reduce((counter, vote) => (counter[vote.Act] = (counter[vote.Act] || 0) + 1, counter), {});
 
-    console.log(result);
+    let response = [];
+
+    for (const [key, value] of Object.entries(results)) {
+        response.push({ name: key, count: value })
+    }
+
+    console.log(response);
 
     context.res = {
         // status: 200, /* Defaults to 200 */
-        body: result
+        body: response
     };
 };
 
