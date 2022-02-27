@@ -23,17 +23,17 @@ const httpTrigger: AzureFunction = async function (context: Context, req: HttpRe
     let validation = await validateRECAP(req.body["g-recaptcha-response"]);
     context.log(validation);
 
-    if (req.body.act === "none") {
-        context.res = {
-            status: 400,
-            body: {
-                message: "invalid Act"
-            }
-        };
-    }
 
     if (validation) {
-        if (context.bindings.validationEntity) {
+        if (req.body.act === "none") {
+            context.res = {
+                status: 400,
+                body: {
+                    message: "invalid Act"
+                }
+            };
+        }
+        else if (context.bindings.validationEntity) {
             context.log('Email entity name: ' + context.bindings.validationEntity.RowKey);
             context.res = {
                 // status: 200, /* Defaults to 200 */
