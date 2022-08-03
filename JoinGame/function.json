@@ -16,6 +16,7 @@
       "databaseName": "kulti22",
       "collectionName": "games",
       "id": "{id}",
+      "partitionKey": "{id}",
       "direction": "in"
     },
     {
