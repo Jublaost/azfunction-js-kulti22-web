@@ -16,6 +16,7 @@
       "databaseName": "kulti22",
       "collectionName": "games",
       "id": "{id}",
+      "partitionKey": "{id}",
       "direction": "in"
     },
     {
@@ -24,7 +25,7 @@
       "databaseName": "kulti22",
       "collectionName": "games",
       "createIfNotExists": true,
-      "partitionKey": "/slot",
+      "partitionKey": "/id",
       "connectionStringSetting": "Jublaost_COSMOSDB",
       "direction": "out"
     },
