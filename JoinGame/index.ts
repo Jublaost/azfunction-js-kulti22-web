@@ -113,7 +113,7 @@ async function getToken(): Promise<string> {
 /**
  * Send Verification Email
  * @param token MS Graph Token
- * @param vote Vote Object
+ * @param joinedUser joinedUser Object
  * @returns 
  */
 async function sendMail(token: string, joinedUser: any) {
