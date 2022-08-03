@@ -1,0 +1,38 @@
+{
+  "bindings": [
+    {
+      "authLevel": "anonymous",
+      "type": "httpTrigger",
+      "direction": "in",
+      "name": "req",
+      "methods": [
+        "post"
+      ]
+    },
+    {
+      "name": "joinIn",
+      "type": "cosmosDB",
+      "connectionStringSetting": "Jublaost_COSMOSDB",
+      "databaseName": "kulti22",
+      "collectionName": "games",
+      "id": "{id}",
+      "direction": "in"
+    },
+    {
+      "name": "joinOut",
+      "type": "cosmosDB",
+      "databaseName": "kulti22",
+      "collectionName": "games",
+      "createIfNotExists": true,
+      "partitionKey": "/slot",
+      "connectionStringSetting": "Jublaost_COSMOSDB",
+      "direction": "out"
+    },
+    {
+      "type": "http",
+      "direction": "out",
+      "name": "res"
+    }
+  ],
+  "scriptFile": "../dist/JoinGame/index.js"
+}
