@@ -88,11 +88,10 @@ async function sendMail(token: string, body: any) {
 
   return await axios(config)
     .then(response => {
-      console.log(response.data);
-      return response.data.value;
+      return response.data;
     })
     .catch(error => {
-      console.log(error);
+      return error;
     });
 }
 
@@ -144,10 +143,9 @@ async function postListItem(token: string, body: any): Promise<any> {
 
   return await axios(config)
     .then(response => {
-      console.log(response.data);
-      return response.data.value;
+      return response.data;
     })
     .catch(error => {
-      console.log(error);
+      return error;
     });
 }
