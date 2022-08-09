@@ -102,6 +102,7 @@ async function sendMail(token: string, body: any) {
  */
 async function postListItem(token: string, body: any): Promise<any> {
   let is18: boolean = body.age == "yes" ? true : false;
+  let under16: boolean = body.unter16 == "yes" ? true : false;
   let datesAufbau: string[] = body['aufbau-dates'] ? body['aufbau-dates'].split(";") : [];
   let datesKulti: string[] = body['kulti-dates'] ? body['kulti-dates'].split(";") : [];
   let datesAbbau: string[] = body['abbau-dates'] ? body['abbau-dates'].split(";") : [];
@@ -123,6 +124,7 @@ async function postListItem(token: string, body: any): Promise<any> {
         "Strasse": body.street,
         "Ort": body.plz + ", " + body.ort,
         "_x0031_8_x002b_": is18,
+        "unter16": under16,
         "T_x002d_Shirt": body["shirt-size"],
         "Zusammenmit": body.friend,
         "Beruf": body.job,
