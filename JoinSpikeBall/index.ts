@@ -129,7 +129,7 @@ async function sendMail(token: string, joinedTeam: any) {
                 "subject": "Verifizierung und Abschluss der Anmeldung!",
                 "body": {
                     "contentType": "html",
-                    "content": "Hallo " + joinedTeam.teamname + "!<br /><br />Cool hast du dich angemeldet!<br />Dein Team '" + joinedTeam.teamname + "' mit den Spielern '" + joinedTeam.player1 + "' & '" + joinedTeam.player2 + "'<br />Bitte bestätige nur noch deine Teilnahme mit folgendem Link: <a href='https://kulti22.azurewebsites.net/api/JoinSpikeballValidation?id=" + joinedTeam.id + "&code=" + joinedTeam.code + "'>Bestätigen</a><br />Bei Fragen oder unklarheiten kannst du auf diese Mail antworten oder direkt: <a href='mailto:games@kulti22.ch'>Kulti22 Games</a><br /><br />Feurige Grüsse<br />Das Kulti22 Games Team"
+                    "content": "Hallo Team " + joinedTeam.name + "!<br /><br />Cool hast du dich angemeldet!<br />Das Team '" + joinedTeam.name + "' mit den Spielern '" + joinedTeam.player1 + "' & '" + joinedTeam.player2 + "' sind registriert.<br />Bitte bestätige nur noch deine Teilnahme mit folgendem Link: <a href='https://kulti22.azurewebsites.net/api/JoinSpikeballValidation?id=" + joinedTeam.id + "&code=" + joinedTeam.code + "'>Bestätigen</a><br />Bei Fragen oder unklarheiten kannst du auf diese Mail antworten oder direkt: <a href='mailto:games@kulti22.ch'>Kulti22 Games</a><br /><br />Feurige Grüsse<br />Das Kulti22 Games Team"
                 },
                 "toRecipients": [
                     {
