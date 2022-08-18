@@ -1,0 +1,40 @@
+{
+  "bindings": [
+    {
+      "authLevel": "anonymous",
+      "type": "httpTrigger",
+      "direction": "in",
+      "name": "req",
+      "methods": [
+        "get",
+        "post"
+      ]
+    },
+    {
+      "name": "joinIn",
+      "type": "cosmosDB",
+      "connectionStringSetting": "Jublaost_COSMOSDB",
+      "databaseName": "kulti22",
+      "collectionName": "spikeball",
+      "id": "{id}",
+      "partitionKey": "{id}",
+      "direction": "in"
+    },
+    {
+      "name": "joinOut",
+      "type": "cosmosDB",
+      "databaseName": "kulti22",
+      "collectionName": "spikeball",
+      "createIfNotExists": true,
+      "partitionKey": "/id",
+      "connectionStringSetting": "Jublaost_COSMOSDB",
+      "direction": "out"
+    },
+    {
+      "type": "http",
+      "direction": "out",
+      "name": "res"
+    }
+  ],
+  "scriptFile": "../dist/JoinSpikeBall/index.js"
+}

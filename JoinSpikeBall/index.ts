@@ -38,19 +38,19 @@ const httpTrigger: AzureFunction = async function (context: Context, req: HttpRe
     }
 
     let uuid = uuidv4();
-    let joinedUser = req.body;
-    joinedUser.code = uuid;
-    joinedUser.approved = false;
+    let joinedTeam = req.body;
+    joinedTeam.code = uuid;
+    joinedTeam.approved = false;
 
-    context.log("JoinedUser: ", joinedUser);
+    context.log("JoinedTeam: ", joinedTeam);
 
     try {
-        context.bindings.joinOut = joinedUser;
+        context.bindings.joinOut = joinedTeam;
 
         let token = await getToken();
         context.log("Token: ", token);
 
-        let mail = await sendMail(token, joinedUser);
+        let mail = await sendMail(token, joinedTeam);
         context.log("Mail: ", mail);
 
         context.res = {
@@ -113,10 +113,10 @@ async function getToken(): Promise<string> {
 /**
  * Send Verification Email
  * @param token MS Graph Token
- * @param joinedUser joinedUser Object
+ * @param joinedTeam joinedUser Object
  * @returns 
  */
-async function sendMail(token: string, joinedUser: any) {
+async function sendMail(token: string, joinedTeam: any) {
     let config: AxiosRequestConfig = {
         method: 'post',
         url: MS_GRAPH_ENDPOINT_SENDMAIL,
@@ -128,12 +128,12 @@ async function sendMail(token: string, joinedUser: any) {
                 "subject": "Verifizierung und Abschluss des Votings!",
                 "body": {
                     "contentType": "html",
-                    "content": "Hallo " + joinedUser.name + "!<br /><br />Cool hast du dich angemeldet!<br />Dein Slot: '" + joinedUser.field + "'<br />Bitte bestätige nur noch deine Teilnahme mit folgendem Link: <a href='https://kulti22.azurewebsites.net/api/JoinGameValidation?id=" + joinedUser.id + "&code=" + joinedUser.code + "'>Bestätigen</a><br />Bei Fragen oder unklarheiten kannst du auf diese Mail antworten oder direkt: <a href='mailto:games@kulti22.ch'>Kulti22 Games</a><br /><br />Feurige Grüsse<br />Das Kulti22 Games Team"
+                    "content": "Hallo " + joinedTeam.teamname + "!<br /><br />Cool hast du dich angemeldet!<br />Dein Team '" + joinedTeam.teamname + "' mit den Spielern '" + joinedTeam.player1 + "' & '" + joinedTeam.player2 + "'<br />Bitte bestätige nur noch deine Teilnahme mit folgendem Link: <a href='https://kulti22.azurewebsites.net/api/JoinSpikeballValidation?id=" + joinedUser.id + "&code=" + joinedUser.code + "'>Bestätigen</a><br />Bei Fragen oder unklarheiten kannst du auf diese Mail antworten oder direkt: <a href='mailto:games@kulti22.ch'>Kulti22 Games</a><br /><br />Feurige Grüsse<br />Das Kulti22 Games Team"
                 },
                 "toRecipients": [
                     {
                         "emailAddress": {
-                            "address": joinedUser.id
+                            "address": joinedTeam.id
                         }
                     }
                 ]
