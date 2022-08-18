@@ -25,7 +25,8 @@ const httpTrigger: AzureFunction = async function (context: Context, req: HttpRe
         context.res = {
             status: 500
         }
-        return
+        throw 'RECAPTCHA FAILED'
+
     }
 
     if (joinIn) {
@@ -63,7 +64,7 @@ const httpTrigger: AzureFunction = async function (context: Context, req: HttpRe
             status: 500,
             body: "server error"
         }
-        return
+        throw 'ERROR 500: Server Error'
     }
 
 };
@@ -125,10 +126,10 @@ async function sendMail(token: string, joinedTeam: any) {
         },
         data: {
             "message": {
-                "subject": "Verifizierung und Abschluss des Votings!",
+                "subject": "Verifizierung und Abschluss der Anmeldung!",
                 "body": {
                     "contentType": "html",
-                    "content": "Hallo " + joinedTeam.teamname + "!<br /><br />Cool hast du dich angemeldet!<br />Dein Team '" + joinedTeam.teamname + "' mit den Spielern '" + joinedTeam.player1 + "' & '" + joinedTeam.player2 + "'<br />Bitte bestätige nur noch deine Teilnahme mit folgendem Link: <a href='https://kulti22.azurewebsites.net/api/JoinSpikeballValidation?id=" + joinedUser.id + "&code=" + joinedUser.code + "'>Bestätigen</a><br />Bei Fragen oder unklarheiten kannst du auf diese Mail antworten oder direkt: <a href='mailto:games@kulti22.ch'>Kulti22 Games</a><br /><br />Feurige Grüsse<br />Das Kulti22 Games Team"
+                    "content": "Hallo " + joinedTeam.teamname + "!<br /><br />Cool hast du dich angemeldet!<br />Dein Team '" + joinedTeam.teamname + "' mit den Spielern '" + joinedTeam.player1 + "' & '" + joinedTeam.player2 + "'<br />Bitte bestätige nur noch deine Teilnahme mit folgendem Link: <a href='https://kulti22.azurewebsites.net/api/JoinSpikeballValidation?id=" + joinedTeam.id + "&code=" + joinedTeam.code + "'>Bestätigen</a><br />Bei Fragen oder unklarheiten kannst du auf diese Mail antworten oder direkt: <a href='mailto:games@kulti22.ch'>Kulti22 Games</a><br /><br />Feurige Grüsse<br />Das Kulti22 Games Team"
                 },
                 "toRecipients": [
                     {
