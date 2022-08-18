@@ -128,7 +128,7 @@ async function sendMail(token: string, joinedUser: any) {
                 "subject": "Verifizierung und Abschluss der Anmeldung!",
                 "body": {
                     "contentType": "html",
-                    "content": "Hallo " + joinedUser.name + "!<br /><br />Cool hast du dich angemeldet!<br />Dein Slot: '" + joinedUser.field + "'<br />Bitte bestätige nur noch deine Teilnahme mit folgendem Link: <a href='https://kulti22.azurewebsites.net/api/JoinGameValidation?id=" + joinedUser.id + "&code=" + joinedUser.code + "'>Bestätigen</a><br />Bei Fragen oder unklarheiten kannst du auf diese Mail antworten oder direkt: <a href='mailto:games@kulti22.ch'>Kulti22 Games</a><br /><br />Feurige Grüsse<br />Das Kulti22 Games Team"
+                    "content": "Hallo " + joinedUser.name + "!<br /><br />Cool hast du dich angemeldet!<br />Dein Slot: '" + joinedUser.field + "'<br />Bitte bestätige nur noch deine Teilnahme mit folgendem Link: (1h gültig) <a href='https://kulti22.azurewebsites.net/api/JoinGameValidation?id=" + joinedUser.id + "&code=" + joinedUser.code + "'>Bestätigen</a><br />Bei Fragen oder unklarheiten kannst du auf diese Mail antworten oder direkt: <a href='mailto:games@kulti22.ch'>Kulti22 Games</a><br /><br />Feurige Grüsse<br />Das Kulti22 Games Team"
                 },
                 "toRecipients": [
                     {
