@@ -23,7 +23,7 @@ const httpTrigger: AzureFunction = async function (context: Context, req: HttpRe
         if (row.length > 0) {
             let mailResponse = await sendMail(context, token, template, pdfBytes, row)
             context.log(mailResponse)
-            await sleep(500);
+            await sleep(1000);
         }
     }
 
@@ -130,7 +130,7 @@ async function sendMail(context, token: string, template: string, pdfBytes: stri
         })
         .catch(async error => {
             if (error.response.status === 429) {
-                await sleep(1000);
+                await sleep(2000);
                 context.log("Retry: ", email);
                 return await sendMail(context, token, template, pdfBytes, email)
             }
