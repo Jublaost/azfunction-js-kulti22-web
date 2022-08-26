@@ -1,0 +1,38 @@
+{
+  "bindings": [
+    {
+      "authLevel": "anonymous",
+      "type": "httpTrigger",
+      "direction": "in",
+      "name": "req",
+      "methods": [
+        "get",
+        "post"
+      ]
+    },
+    {
+      "name": "gamesIn",
+      "type": "cosmosDB",
+      "connectionStringSetting": "Jublaost_COSMOSDB",
+      "databaseName": "kulti22",
+      "collectionName": "games",
+      "direction": "in",
+      "sqlQuery": "SELECT c.id, c.name, c.field, c.approved FROM c"
+    },
+    {
+      "name": "spikeballIn",
+      "type": "cosmosDB",
+      "connectionStringSetting": "Jublaost_COSMOSDB",
+      "databaseName": "kulti22",
+      "collectionName": "spikeball",
+      "direction": "in",
+      "sqlQuery": "SELECT c.id, c.name, c.field, c.approved FROM c"
+    },
+    {
+      "type": "http",
+      "direction": "out",
+      "name": "res"
+    }
+  ],
+  "scriptFile": "../dist/GetRegistrations/index.js"
+}
